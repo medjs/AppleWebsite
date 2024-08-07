@@ -10,8 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-assets
-models
+*assets
+*models
 *.local
 
 # Editor directories and files
