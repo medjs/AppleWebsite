@@ -24,6 +24,11 @@ const VideoCarousal = () => {
     const { isEnd, isLastVideo, startPlay, videoId, isPlaying } = video;
 
     useGSAP(()=>{
+        gsap.to('#slider', {
+            transform: `translateX(${-100 * videoId}%)`,
+            duration: 2,
+            ease: 'power1.inOut'
+        })
         gsap.to('#video', {
             scrollTrigger:{
                 trigger:'#video',
@@ -88,7 +93,7 @@ const VideoCarousal = () => {
             }
             //update the progressbar
             const animUpdate=()=>{
-                anim.progress(videoRef.current[videoId] / hightlightsSlides[videoId].videoDuration)
+                anim.progress(videoRef.current[videoId].currentTime / hightlightsSlides[videoId].videoDuration)
             }
             if(isPlaying){
                 gsap.ticker.add(animUpdate)
@@ -112,6 +117,9 @@ const VideoCarousal = () => {
             case 'play':
                 setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }))
                 break;
+            case 'pause':
+                setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }))
+                break;
 
             default:
                 return video;
@@ -125,6 +133,7 @@ const VideoCarousal = () => {
                         <div className="video-carousel_container">
                             <div className="w-full h-full flex-center rounded-3xl overflow-hidden bg-black">
                                 <video
+                                    className={`${list.id === 2 && 'translate-x-44'} pointer-events-none`}
                                     id="video"
                                     playsInline={true}
                                     reload='auto'
@@ -136,6 +145,9 @@ const VideoCarousal = () => {
                                         }))
                                     }}
                                     onLoadedMetadata={(e)=>handleLoadedMetadata(i, e)}
+                                    onEnded={()=>
+                                        (i !== 3) ? handleProcess('video-end', i) : handleProcess('video-last')
+                                    }
                                 >
                                     <source src={list.video} type="video/mp4" />
                                 </video>
